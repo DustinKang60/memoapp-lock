@@ -252,7 +252,7 @@
         <span style="font-size:18px">🗑️</span>
         <span style="color:#ef4444;font-size:15px;font-weight:600">모든 메모 삭제</span>
       </div>
-      <div style="text-align:center;margin-top:32px;font-size:12px;color:#64748b">잠금 메모장 v1.0 · 작은앱공방</div>
+      <div style="text-align:center;margin-top:32px;font-size:12px;color:#64748b">잠금 메모장 v1.1 · 작은앱공방</div>
     </div>
   </div>
 </div>
@@ -347,7 +347,9 @@
     return encJSON(lockKey,secret).then(function(e){return {id:m.id,category:m.category,date:m.date,title:m.title,updatedAt:m.updatedAt,locked:true,content:'',images:[],enc:e};});
   }
   function openMemo(m){if(!m.locked)return Promise.resolve(m);return decJSON(lockKey,m.enc).then(function(s){var p=Object.assign({},m,s);delete p.enc;return p;});}
-  function withPlain(m,cb){if(!m.locked){cb(m);return;}ensureKey().then(function(ok){if(!ok)return;return openMemo(m).then(cb);}).catch(function(){alert('❌ 잠긴 메모를 열지 못했어요.');});}
+  // 잠긴 메모를 열거나 공유할 때는 열쇠가 이미 있어도 매번 비밀번호를 묻는다(선배 결정 2026-11-25: 그게 이해하기 쉽다).
+  // 잠가서 저장할 때는 열쇠가 있으면 다시 묻지 않는다.
+  function withPlain(m,cb){if(!m.locked){cb(m);return;}askUnlock().then(function(ok){if(!ok)return;return openMemo(m).then(cb);}).catch(function(){alert('❌ 잠긴 메모를 열지 못했어요.');});}
   function rekeyAll(list,from,to){return Promise.all(list.map(function(m){if(!m.locked)return m;return decJSON(from,m.enc).then(function(s){return encJSON(to,s);}).then(function(e){return Object.assign({},m,{enc:e});});}));}
   function hintLine(lock){return lock&&lock.hint?'힌트: '+esc(lock.hint)+'<br>':'';}
 
@@ -393,6 +395,10 @@
   // 열쇠가 없으면 비밀번호를 물어 만든다(비밀번호가 아직 없으면 새로 만들게 한다). 결과: 열쇠 준비됨=true
   function ensureKey(){
     if(lockKey)return Promise.resolve(true);
+    return askUnlock();
+  }
+  // 열쇠가 있든 없든 비밀번호를 물어 확인한다
+  function askUnlock(){
     if(!settings.lock)return setupLock();
     var lock=settings.lock;
     return openPwSheet({title:'🔒 비밀번호 입력',desc:hintLine(lock)+'잠긴 메모를 열려면 비밀번호가 필요해요.',fields:[{id:'pw',ph:'비밀번호'}],

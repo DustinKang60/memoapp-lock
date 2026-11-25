@@ -1,5 +1,5 @@
 // ─── Service Worker - 잠금 메모장 ───────────────────────────────────
-const CACHE_NAME = "memolock-v1";
+const CACHE_NAME = "memolock-v2";
 const FONT_CACHE = "memolock-fonts";   // 버전과 무관하게 유지
 const ASSETS = [
   "/memoapp-lock/",
