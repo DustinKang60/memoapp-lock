@@ -1,0 +1,26 @@
+{
+  "name": "잠금 메모장",
+  "short_name": "잠금메모장",
+  "description": "작은앱공방 잠금 메모장",
+  "start_url": "/memoapp-lock/",
+  "scope": "/memoapp-lock/",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
+  "orientation": "portrait",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/memoapp-lock/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/memoapp-lock/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
